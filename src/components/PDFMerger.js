@@ -170,7 +170,13 @@ function PDFMerger() {
     anchor.download = "merged.pdf";
     anchor.click();
   };
-
+  useEffect(() => {
+    return () => {
+      if (mergedPdfUrl) {
+        URL.revokeObjectURL(mergedPdfUrl);
+      }
+    };
+  }, [mergedPdfUrl]);
   return (
     <Container fluid>
       <Row>

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes, BrowserRouter } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import Home from "./components/Home";
 import PDFExtractor from "./components/PDFExtractor";
@@ -10,16 +10,18 @@ import MyNav from "./components/MyNav";
 import PDFMerger from "./components/PDFMerger";
 import ContactMe from "./components/ContactMe";
 
+const basename = process.env.REACT_APP_BASENAME || "";
+console.log("Base URL:", basename);
 function App() {
   return (
-    <Router>
+    <BrowserRouter basename={basename}>
       <MyNav></MyNav>
 
       <Container fluid className="my-4" style={{ minWidth: "480px" }}>
         <Row>
           <Col>
             <Routes>
-              <Route path="/" exact element={<Home></Home>} />
+              <Route path="/" element={<Home></Home>} />
               <Route
                 path="/extractor"
                 element={<PDFExtractor></PDFExtractor>}
@@ -32,7 +34,7 @@ function App() {
           </Col>
         </Row>
       </Container>
-    </Router>
+    </BrowserRouter>
   );
 }
 

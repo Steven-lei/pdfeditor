@@ -144,7 +144,13 @@ const PDFExtractor = () => {
     a.download = "extracted.pdf";
     a.click();
   };
-
+  useEffect(() => {
+    return () => {
+      if (extractedUrl) {
+        URL.revokeObjectURL(extractedUrl);
+      }
+    };
+  }, [extractedUrl]);
   return (
     <Container fluid>
       <Row>
