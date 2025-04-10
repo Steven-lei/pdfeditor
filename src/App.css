@@ -1,38 +1,110 @@
-.App {
-  text-align: center;
+/* App.css */
+html,
+body,
+#root,
+.app-wrapper {
+  height: 100%;
+  margin: 0;
+  min-width: 320px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.box {
+  border: 1px solid #ccc;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.custom-navbar {
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.app-body {
+  width: "100%";
+  height: calc(
+    100vh - 56px
+  ); /* Default Bootstrap navbar height on md+ screens */
+  margin-top: 56px; /* Push down to avoid hiding under navbar */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 335.98px) {
+  .app-body {
+    /* In case the navbar expands more on mobile, adjust accordingly */
+    margin-top: 112px;
+    height: calc(100vh - 112px);
   }
-  to {
-    transform: rotate(360deg);
+}
+
+.main-window {
+  display: flex;
+  flex-direction: column; /* Stack operator and view window vertically by default */
+  overflow: hidden;
+}
+.main-window-content {
+  display: flex;
+  flex-direction: column;
+}
+.operator-window {
+  flex-grow: 0; /* Prevent operator window from stretching */
+  width: 438px; /* Fixed width */
+  padding: 1rem;
+  background-color: #efefef;
+}
+.viewer-window {
+  background-color: rgb(208, 208, 208);
+  width: 100%;
+  flex-grow: 0;
+  padding: 1rem;
+}
+/* 
+/* On wider screens (md+), arrange the operator and view windows in columns */
+@media (min-width: 1024px) {
+  .main-window-content {
+    flex-direction: row; /* Stack operator and view window side by side */
+  }
+
+  .operator-window {
+    width: 438px; /* Ensure the operator window has a fixed width of 438px */
+  }
+
+  .viewer-window {
+    flex-grow: 1; /* Ensure the view window takes the remaining space */
+  }
+}
+
+/* Ensure on smaller screens, operator window will be stacked above view window */
+@media (max-width: 1023.99px) {
+  .main-window-content {
+    flex-direction: column; /* Stack operator and view window side by side */
+  }
+  .operator-window {
+    width: 100%; /* Allow operator window to take full width on small screens */
+  }
+
+  .viewer-window {
+    width: 100%; /* Allow view window to take full width on small screens */
+  }
+}
+.preview-window {
+  padding: 1rem;
+}
+/*hidden on small screen*/
+@media (max-width: 1023.99px) {
+  .preview-window {
+    display: none;
+  }
+}
+
+.dialog {
+  width: 450px;
+  margin-top: 10vh;
+}
+@media (max-width: 335.98px) {
+  .dialog {
+    max-width: 80%;
   }
 }

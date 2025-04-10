@@ -1,16 +1,13 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
 
 const ContactMe = () => {
   return (
-    <Container>
-      <Row>
-        <Col>
-          <b>Email: </b>
-          <a href="mailto:leizhengwen@126.com">leizhengwen@126.com</a>
-        </Col>
-      </Row>
-    </Container>
+    <div>
+      {/* Header with PDF Info */}
+      <h4>Contact Me</h4>
+      <b>Email: </b>
+      <a href="mailto:leizhengwen@126.com">leizhengwen@126.com</a>
+    </div>
   );
 };
 

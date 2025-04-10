@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Container, Row, Col, Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { PDFDocument } from "pdf-lib";
 import PDFViewer from "./PDFViewer";
 import Thumbnail from "./Thumbnail";
+import MainLayout from "./MainLayout";
 
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf/pdf.worker.mjs`;
@@ -50,19 +51,11 @@ const Sidebar = ({ pdfData, onClickPage, selectedPages }) => {
     });
   }, [visiblePages, renderedPages]);
   return (
-    <div style={{ display: "flex" }}>
-      {/* Sidebar with thumbnails */}
-      <div
-        style={{
-          height: "60vh", // Ensuring the sidebar takes up 80% of the viewport height
-          overflowY: "auto", // Enables scrolling when thumbnails exceed sidebar height
-          padding: "1rem",
-          marginRight: "1rem",
-        }}
-      >
+    numPages > 0 && (
+      <div className="d-flex flex-column box rounded p-3">
+        {/* Sidebar with thumbnails */}
         {Array.from({ length: numPages }, (_, index) => {
           const pageNumber = index + 1;
-          console.log(selectedPages.includes(pageNumber));
           return (
             <Thumbnail
               key={pageNumber}
@@ -79,7 +72,7 @@ const Sidebar = ({ pdfData, onClickPage, selectedPages }) => {
           );
         })}
       </div>
-    </div>
+    )
   );
 };
 
@@ -152,93 +145,57 @@ const PDFExtractor = () => {
     };
   }, [extractedUrl]);
   return (
-    <Container fluid>
-      <Row>
-        <Col xs="auto">
-          <Container
-            className="py-4 flex mb-3"
-            style={{
-              width: "400px",
-              maxHeight: "87vh", // Set your desired max height
-              overflowY: "auto",
-              overflowX: "hidden",
-              paddingRight: "10px", // optional: space for scrollbar
-              border: "1px solid #ccc",
-            }}
-          >
-            <Row>
-              <Col>
-                <h3>PDF Extractor</h3>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group controlId="formFile" className="mb-3">
-                  <Form.Label>Select a PDF file</Form.Label>
-                  <Form.Control
-                    type="file"
-                    accept="application/pdf"
-                    onChange={handleFileChange}
-                  />
-                </Form.Group>
-                {numPages > 0 && (
-                  <>
-                    <Row className="mb-4">
-                      <Col>
-                        <Button
-                          variant="primary"
-                          onClick={handleExtract}
-                          disabled={selectedPages.length === 0}
-                        >
-                          Extract Now
-                        </Button>
-                      </Col>
-                    </Row>
-                  </>
-                )}
-                <Sidebar
-                  pdfData={pdfDoc}
-                  selectedPages={selectedPages}
-                  onClickPage={togglePageSelection}
-                />
-              </Col>
-            </Row>
-          </Container>
-        </Col>
-        <Col>
-          {extractedUrl && (
-            <Row>
-              <Col>
-                <Container>
-                  <Row>
-                    <Col xs="auto">
-                      <h5 className="mb-3">Extracted PDF Preview</h5>
-                    </Col>
-                    <Col>
-                      {extractedUrl && (
-                        <Button
-                          as="a"
-                          variant="link"
-                          className="ms-3 text-decoration-underline text-success"
-                          onClick={handleDownload}
-                        >
-                          Download Extracted PDF
-                        </Button>
-                      )}
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <PDFViewer pdfData={extractedPdfDoc} />
-                    </Col>
-                  </Row>
-                </Container>
-              </Col>
-            </Row>
+    <MainLayout
+      operater={
+        <div className="d-flex flex-column box p-2 gap-2 ">
+          <Form.Group controlId="formFile">
+            <Form.Label>Select a PDF file</Form.Label>
+            <Form.Control
+              type="file"
+              accept="application/pdf"
+              onChange={handleFileChange}
+            />
+          </Form.Group>
+          {numPages > 0 && (
+            <Button
+              variant="primary"
+              onClick={handleExtract}
+              disabled={selectedPages.length === 0}
+            >
+              Extract Now
+            </Button>
           )}
-        </Col>
-      </Row>
-    </Container>
+          <Sidebar
+            pdfData={pdfDoc}
+            selectedPages={selectedPages}
+            onClickPage={togglePageSelection}
+          />
+        </div>
+      }
+      viewer={
+        <>
+          {extractedUrl && (
+            <div className="d-flex flex-column p-2 box rounded-2">
+              <h5>Merged PDF Preview</h5>
+
+              {extractedUrl && (
+                <Button
+                  as="a"
+                  variant="link"
+                  className="ms-3 text-decoration-underline text-success"
+                  onClick={handleDownload}
+                >
+                  Download Extracted PDF
+                </Button>
+              )}
+
+              <PDFViewer pdfData={extractedPdfDoc} />
+            </div>
+          )}
+        </>
+      }
+      title={<h4>PDF Extractor</h4>}
+    ></MainLayout>
   );
 };
 

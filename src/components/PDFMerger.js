@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  ProgressBar,
-  ListGroup,
-  Container,
-  Row,
-  Col,
-} from "react-bootstrap";
-//import PDFOverview from "./PDFOverview"; // Existing component for thumbnail view
-import PDFReader from "./PDFReader"; // Existing component for detailed view
+import { Button, ProgressBar } from "react-bootstrap";
 import { PDFDocument } from "pdf-lib";
 import PDFViewer from "./PDFViewer";
 import Thumbnail from "./Thumbnail";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import MainLayout from "./MainLayout";
+import FileInfo from "./FileInfo";
 
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf/pdf.worker.mjs`;
@@ -33,11 +26,11 @@ function loadPdfDocument(file) {
 
 function DraggableItem({ pdf, index, moveItem, onRemove }) {
   const [pdfDocument, setPdfDocument] = useState(null);
-
   useEffect(() => {
     loadPdfDocument(pdf.file)
       .then((doc) => {
         setPdfDocument(doc); // Store the loaded document
+        console.log("doc", doc);
       })
       .catch((err) => {
         console.error("Error loading PDF:", err);
@@ -61,38 +54,39 @@ function DraggableItem({ pdf, index, moveItem, onRemove }) {
   });
 
   drag(drop(ref));
+
   return (
-    <Container
+    <div
       ref={ref}
       style={{ opacity: isDragging ? 0.5 : 1, cursor: "pointer" }}
-      className=" border p-2 mb-2 rounded"
+      className="container border p-2 gap-3 rounded overflow-hidden w-100"
     >
-      <Row className="align-items-center">
-        <Col xs="auto">
+      <div className="row">
+        <div className="col">
           {pdfDocument && <Thumbnail pdfData={pdfDocument} scale={0.15} />}
-        </Col>
-        <Col>
-          <Container>
-            <Row className="mb-3">
-              <Col className="text-wrap w-100">
-                <strong className="me-3">{pdf.name}</strong>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => onRemove(index)}
-                >
-                  Remove
-                </Button>
-              </Col>
-            </Row>
-          </Container>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+
+        <div className="d-flex flex-column gap-1 text-wrap">
+          <FileInfo
+            pdfInfo={{
+              title: pdf?.name,
+              pages: pdfDocument?.numPages,
+              size: pdf?.file?.size,
+            }}
+          ></FileInfo>
+          <strong className="me-3">{pdf.name}</strong>
+
+          <Button
+            className="w-100"
+            variant="outline-danger"
+            size="sm"
+            onClick={() => onRemove(index)}
+          >
+            Remove
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 function PDFMerger() {
@@ -178,56 +172,36 @@ function PDFMerger() {
     };
   }, [mergedPdfUrl]);
   return (
-    <Container fluid>
-      <Row>
-        <Col xs="auto">
+    <MainLayout
+      operater={
+        <>
           <DndProvider backend={HTML5Backend}>
-            <Container
-              className="py-4 flex mb-3"
-              style={{
-                width: "400px",
-                maxHeight: "87vh", // Set your desired max height
-                overflowY: "auto",
-                overflowX: "hidden",
-                paddingRight: "10px", // optional: space for scrollbar
-                border: "1px solid #ccc",
-              }}
-            >
-              <h2 className="mb-4">PDF Merger</h2>
-
-              <Row className="mb-3">
-                <Col>
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    multiple
-                    onChange={handleFileUpload}
-                    className="form-control"
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  {isMerging && (
-                    <ProgressBar
-                      now={mergeProgress}
-                      label={`${mergeProgress}%`}
-                      className="mb-3"
-                    />
-                  )}
-                </Col>
-              </Row>
-              <Row className="mb-3">
-                <Col>
-                  <Button
-                    onClick={handleMergeFiles}
-                    disabled={pdfFiles.length < 2 || isMerging}
-                    variant="primary"
-                  >
-                    Merge PDFs
-                  </Button>
-                </Col>
-              </Row>
+            <div className="d-flex flex-column box p-2 gap-2 ">
+              <input
+                type="file"
+                accept="application/pdf"
+                multiple
+                onChange={handleFileUpload}
+                className="form-control"
+              />
+              {isMerging && (
+                <ProgressBar
+                  now={mergeProgress}
+                  label={`${mergeProgress}%`}
+                  className="mb-3"
+                />
+              )}
+              {pdfFiles.length >= 2 ? (
+                <Button
+                  onClick={handleMergeFiles}
+                  disabled={pdfFiles.length < 2 || isMerging}
+                  variant="primary"
+                >
+                  Merge PDFs
+                </Button>
+              ) : (
+                <b>Select two or more pdf files to merge</b>
+              )}
               {pdfFiles.map((pdf, index) => (
                 <DraggableItem
                   key={pdf.id}
@@ -237,45 +211,34 @@ function PDFMerger() {
                   onRemove={handleRemoveFile}
                 />
               ))}
-            </Container>
+            </div>
           </DndProvider>
-        </Col>
-        <Col>
-          <Container xs="auto">
-            {mergedPdfDoc && (
-              <Row className="mt-4">
-                <Col>
-                  <Container>
-                    <Row>
-                      <Col xs="auto">
-                        <h5 className="mb-3">Merged PDF Preview</h5>
-                      </Col>
-                      <Col>
-                        {mergedPdfUrl && (
-                          <Button
-                            as="a"
-                            variant="link"
-                            className="ms-3 text-decoration-underline text-success"
-                            onClick={handleDownloadMergedPdf}
-                          >
-                            Download Merged PDF
-                          </Button>
-                        )}
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        <PDFViewer pdfData={mergedPdfDoc} />
-                      </Col>
-                    </Row>
-                  </Container>
-                </Col>
-              </Row>
-            )}
-          </Container>
-        </Col>
-      </Row>
-    </Container>
+        </>
+      }
+      viewer={
+        <>
+          {mergedPdfDoc && (
+            <div className="d-flex flex-column p-2 box rounded-2">
+              <h5>Merged PDF Preview</h5>
+
+              {mergedPdfUrl && (
+                <Button
+                  as="a"
+                  variant="link"
+                  className="ms-3 text-decoration-underline text-success"
+                  onClick={handleDownloadMergedPdf}
+                >
+                  Download Merged PDF
+                </Button>
+              )}
+
+              <PDFViewer pdfData={mergedPdfDoc} />
+            </div>
+          )}
+        </>
+      }
+      title={<h4>PDF Merger</h4>}
+    ></MainLayout>
   );
 }
 

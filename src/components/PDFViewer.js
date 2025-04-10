@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Thumbnail from "./Thumbnail";
 import Page from "./Page";
 import ZoomControls from "./ZoomControls";
@@ -65,25 +65,23 @@ const PDFViewer = ({
   }, [visiblePages, renderedPages]);
 
   return (
-    <Container fluid style={{ height: "87vh" }}>
-      <Row className="my-3 ">
-        <Col className="d-flex justify-content-center">
-          <RotateControls
-            onAntiClockwise={handleAntiClockwise}
-            onClockWise={handleClockwise}
-          ></RotateControls>
-          <ZoomControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} />
-        </Col>
-      </Row>
+    <div>
+      <div className="d-flex justify-content-center gap-2 m-2">
+        <RotateControls
+          onAntiClockwise={handleAntiClockwise}
+          onClockWise={handleClockwise}
+        ></RotateControls>
+        <ZoomControls onZoomIn={handleZoomIn} onZoomOut={handleZoomOut} />
+      </div>
       {/* PDF Page Container */}
-      <Row
+      <div
         style={{
           height: "calc(100% - 70px)", // Take the remaining height after zoom controls
           overflowY: "auto", // Enable vertical scrolling
           padding: 0, // Remove padding to ensure full-width scrolling
         }}
       >
-        <Col ref={containerRef}>
+        <div ref={containerRef}>
           <div
             style={{
               width: "100%",
@@ -114,9 +112,9 @@ const PDFViewer = ({
               );
             })}
           </div>
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -3,7 +3,9 @@ import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import PDFViewer from "./PDFViewer";
-import { Col, Container, Row } from "react-bootstrap";
+import MainLayout from "./MainLayout";
+import FileUpload from "./FileUpload";
+import FileInfo from "./FileInfo";
 
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf/pdf.worker.mjs`;
@@ -25,6 +27,7 @@ function PDFReader() {
       setPdfInfo({
         title: file.name,
         pages: pdf.numPages,
+        size: file.size,
       });
       const docMetadata = await pdf.getMetadata();
       setMetadata(docMetadata.metadata);
@@ -35,44 +38,22 @@ function PDFReader() {
   };
 
   return (
-    <Container fluid>
-      <Row>
-        <Col xs="auto">
-          <Container
-            className="py-4 flex mb-3"
-            style={{
-              width: "400px",
-              maxHeight: "87vh", // Set your desired max height
-              overflowY: "auto",
-              overflowX: "hidden",
-              paddingRight: "10px", // optional: space for scrollbar
-              border: "1px solid #ccc",
-            }}
-          >
-            <Row>
-              <Col>
-                <Header
-                  title={
-                    pdfInfo ? `PDF Reader: ${pdfInfo.title}` : "PDF Reader"
-                  }
-                  pages={pdfInfo?.pages}
-                  handleFileUpload={handleFileUpload}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Sidebar
-                  pdfData={pdfData}
-                  currentPage={currentPage}
-                  onSelectedPage={handleSelectedPage}
-                />
-              </Col>
-            </Row>
-          </Container>
-        </Col>
-
-        <Col style={{ overflow: "auto" }}>
+    <MainLayout
+      operater={
+        <>
+          <div className="d-grid box p-2 gap-2">
+            <FileUpload onFileUpload={handleFileUpload} />
+            <FileInfo pdfInfo={pdfInfo}></FileInfo>
+            <Sidebar
+              pdfData={pdfData}
+              currentPage={currentPage}
+              onSelectedPage={handleSelectedPage}
+            />
+          </div>
+        </>
+      }
+      viewer={
+        <div>
           {pdfData && (
             <PDFViewer
               pdfData={pdfData}
@@ -80,9 +61,16 @@ function PDFReader() {
               onSelectedPage={handleSelectedPage}
             />
           )}
-        </Col>
-      </Row>
-    </Container>
+        </div>
+      }
+      title={
+        <Header
+          title={pdfInfo ? `PDF Reader: ${pdfInfo.title}` : "PDF Reader"}
+          pages={pdfInfo?.pages}
+          handleFileUpload={handleFileUpload}
+        />
+      }
+    ></MainLayout>
   );
 }
 

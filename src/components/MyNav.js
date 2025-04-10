@@ -1,13 +1,27 @@
+import { useState } from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
+
 const MyNav = () => {
+  const [expanded, setExpanded] = useState(false);
+  const handleNavClick = () => {
+    setExpanded(false); // Collapse navbar after clicking a link
+  };
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" style={{ minWidth: "480px" }}>
+    <Navbar
+      variant="dark"
+      expand="md"
+      style={{ minWidth: "320px" }}
+      expanded={expanded}
+      fixed="top"
+      onToggle={() => setExpanded(!expanded)}
+      className="custom-navbar"
+    >
       <Navbar.Brand className="mx-5" as={Link} to="/">
         PDF Utility - Steven
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
+      <Navbar.Collapse id="basic-navbar-nav" onClick={handleNavClick}>
         <Nav className="ml-auto">
           <Nav.Link as={Link} to="/reader">
             PDF Reader

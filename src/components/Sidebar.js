@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import Thumbnail from "./Thumbnail";
-import { Container } from "react-bootstrap";
 
 const Sidebar = ({ pdfData, onSelectedPage, currentPage }) => {
   const [numPages, setNumPages] = useState(0);
@@ -44,32 +43,23 @@ const Sidebar = ({ pdfData, onSelectedPage, currentPage }) => {
     });
   }, [visiblePages, renderedPages]);
   return (
-    <div style={{ display: "flex" }}>
+    <div className="preview-window">
       {/* Sidebar with thumbnails */}
-      <div
-        style={{
-          height: "68vh", // Ensuring the sidebar takes up 80% of the viewport height
-          overflowY: "auto", // Enables scrolling when thumbnails exceed sidebar height
-          padding: "1rem",
-          marginRight: "1rem",
-        }}
-      >
-        {Array.from({ length: numPages }, (_, index) => {
-          const pageNumber = index + 1;
-          return (
-            <Thumbnail
-              key={pageNumber}
-              pageNumber={pageNumber}
-              scale={0.3}
-              pdfData={pdfData} // Pass pdfData here
-              onClick={() => {
-                onSelectedPage && onSelectedPage(pageNumber);
-              }}
-              selected={pageNumber === currentPage}
-            />
-          );
-        })}
-      </div>
+      {Array.from({ length: numPages }, (_, index) => {
+        const pageNumber = index + 1;
+        return (
+          <Thumbnail
+            key={pageNumber}
+            pageNumber={pageNumber}
+            scale={0.3}
+            pdfData={pdfData} // Pass pdfData here
+            onClick={() => {
+              onSelectedPage && onSelectedPage(pageNumber);
+            }}
+            selected={pageNumber === currentPage}
+          />
+        );
+      })}
     </div>
   );
 };
