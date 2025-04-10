@@ -6,6 +6,7 @@ import PDFViewer from "./PDFViewer";
 import MainLayout from "./MainLayout";
 import FileUpload from "./FileUpload";
 import FileInfo from "./FileInfo";
+import { Form } from "react-bootstrap";
 
 const pdfjs = require("pdfjs-dist");
 pdfjs.GlobalWorkerOptions.workerSrc = `${process.env.PUBLIC_URL}/pdf/pdf.worker.mjs`;
@@ -42,7 +43,14 @@ function PDFReader() {
       operater={
         <>
           <div className="d-grid box p-2 gap-2">
-            <FileUpload onFileUpload={handleFileUpload} />
+            <Form.Group controlId="formFile">
+              <Form.Label>Select a PDF file</Form.Label>
+              <Form.Control
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileUpload}
+              />
+            </Form.Group>
             <FileInfo pdfInfo={pdfInfo}></FileInfo>
             <Sidebar
               pdfData={pdfData}

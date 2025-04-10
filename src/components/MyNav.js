@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Navbar, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import logo from "../logo192.webp"; // Import the logo file
 
 const MyNav = () => {
   const [expanded, setExpanded] = useState(false);
@@ -18,6 +19,12 @@ const MyNav = () => {
       className="custom-navbar"
     >
       <Navbar.Brand className="mx-5" as={Link} to="/">
+        <img
+          className="me-2"
+          src={logo} // Use the imported logo file
+          alt="Logo"
+          style={{ height: "26px" }} // Customize the logo size and margin
+        />
         PDF Utility - Steven
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />

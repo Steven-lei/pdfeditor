@@ -43,24 +43,28 @@ const Sidebar = ({ pdfData, onSelectedPage, currentPage }) => {
     });
   }, [visiblePages, renderedPages]);
   return (
-    <div className="preview-window">
-      {/* Sidebar with thumbnails */}
-      {Array.from({ length: numPages }, (_, index) => {
-        const pageNumber = index + 1;
-        return (
-          <Thumbnail
-            key={pageNumber}
-            pageNumber={pageNumber}
-            scale={0.3}
-            pdfData={pdfData} // Pass pdfData here
-            onClick={() => {
-              onSelectedPage && onSelectedPage(pageNumber);
-            }}
-            selected={pageNumber === currentPage}
-          />
-        );
-      })}
-    </div>
+    <>
+      {pdfData && (
+        <div className="preview-window">
+          {/* Sidebar with thumbnails */}
+          {Array.from({ length: numPages }, (_, index) => {
+            const pageNumber = index + 1;
+            return (
+              <Thumbnail
+                key={pageNumber}
+                pageNumber={pageNumber}
+                scale={0.3}
+                pdfData={pdfData} // Pass pdfData here
+                onClick={() => {
+                  onSelectedPage && onSelectedPage(pageNumber);
+                }}
+                selected={pageNumber === currentPage}
+              />
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 };
 
