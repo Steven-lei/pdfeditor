@@ -11,7 +11,7 @@ import ContactMe from "./components/ContactMe";
 import "./App.css";
 
 const basename = process.env.REACT_APP_BASENAME || "";
-console.log("Base URL:", basename);
+
 function App() {
   return (
     <BrowserRouter basename={basename}>
